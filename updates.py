@@ -6,13 +6,22 @@ def get_key():
         key = f.read().strip()
     return key
 
-def request_updates(api_key):
+
+def request_gtfs_rt_updates(api_key):
     r = requests.get(
         "https://api.opentransportdata.swiss/gtfs-rt?format=JSON",
         headers={'Authorization': api_key})
+    # TODO: exception for unauthorized access and unknown errors
     return json.loads(r.text)
+
+
+def get_trip_updates(gtfs_updates):
+    entity = gtfs_updates['entity']
+    trip_updates = {item['id']: item['trip_update'] for item in entity}
+    return trip_updates
+
 
 if __name__ == "__main__":
     api_key = get_key()
-    updates = request_updates(api_key)
-    print(updates['header'])
+    gtfs_rt_updates = request_gtfs_rt_updates(api_key)
+    trip_updates = get_trip_updates(gtfs_rt_updates)
