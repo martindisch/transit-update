@@ -41,7 +41,6 @@ def get_routes():
         routes = {
             row[0]: {
                 'agency_id': row[1],
-                'route_short_name': row[2],
                 'route_desc': row[4]
             } for row in csv_reader
         }
