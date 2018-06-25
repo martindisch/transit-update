@@ -1,6 +1,9 @@
 # GTFS data directory
 gtfs/
 
+# API key
+apikey
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
