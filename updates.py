@@ -54,10 +54,45 @@ def get_agencies():
     return agencies
 
 
-if __name__ == "__main__":
-    api_key = get_key()
+def show_updates(api_key):
+    print("Requesting updates from API...")
     gtfs_rt_updates = request_gtfs_rt_updates(api_key)
+    print("Converting updates...")
     trip_updates = get_trip_updates(gtfs_rt_updates)
+    print("Loading GTFS static data...")
     trips = get_trips()
     routes = get_routes()
     agencies = get_agencies()
+    print("Done.")
+
+    fails = 0
+    for trip_id, update in trip_updates.items():
+        if trip_id in trips:
+            trip_update = update['trip']
+            route_id = trip_update['route_id']
+            start_time = trip_update['start_time']
+
+            trip = trips[trip_id]
+            trip_headsign = trip['trip_headsign']
+            trip_short_name = trip['trip_short_name']
+
+            route = routes[route_id]
+            agency_id = route['agency_id']
+            route_desc = route['route_desc']
+
+            agency = agencies[agency_id]
+
+            print()
+            print(trip_id)
+            print("{}: {}".format(trip_short_name, trip_headsign))
+            print("{}, start time {}".format(route_desc, start_time))
+            print("Operated by {}".format(agency))
+        else:
+            fails += 1
+    print()
+    print("Done. {} trips were not found.".format(fails))
+
+
+if __name__ == "__main__":
+    api_key = get_key()
+    show_updates(api_key)
