@@ -65,12 +65,13 @@ def show_updates(api_key):
     agencies = get_agencies()
     print("Done.")
 
-    fails = 0
     for trip_id, update in trip_updates.items():
+        print()
         if trip_id in trips:
             trip_update = update['trip']
             route_id = trip_update['route_id']
             start_time = trip_update['start_time']
+            status = trip_update['schedule_relationship']
 
             trip = trips[trip_id]
             trip_headsign = trip['trip_headsign']
@@ -82,15 +83,13 @@ def show_updates(api_key):
 
             agency = agencies[agency_id]
 
-            print()
-            print(trip_id)
+            print("{} with status {}".format(trip_id, status))
             print("{}: {}".format(trip_short_name, trip_headsign))
             print("{}, start time {}".format(route_desc, start_time))
             print("Operated by {}".format(agency))
         else:
-            fails += 1
-    print()
-    print("Done. {} trips were not found.".format(fails))
+            print("{} with status {}".format(trip_id, status))
+            print("Not a standard trip, no further information found.")
 
 
 if __name__ == "__main__":
