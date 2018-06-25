@@ -16,7 +16,8 @@ def request_gtfs_rt_updates(api_key):
     return json.loads(r.text)
 
 
-def get_trip_updates(gtfs_updates):
+def get_trip_updates(api_key):
+    gtfs_updates = request_gtfs_rt_updates(api_key)
     entity = gtfs_updates['entity']
     trip_updates = {item['id']: item['trip_update'] for item in entity}
     return trip_updates
@@ -55,15 +56,10 @@ def get_agencies():
 
 
 def show_updates(api_key):
-    print("Requesting updates from API...")
-    gtfs_rt_updates = request_gtfs_rt_updates(api_key)
-    print("Converting updates...")
-    trip_updates = get_trip_updates(gtfs_rt_updates)
-    print("Loading GTFS static data...")
+    trip_updates = get_trip_updates(api_key)
     trips = get_trips()
     routes = get_routes()
     agencies = get_agencies()
-    print("Done.")
 
     for trip_id, update in trip_updates.items():
         print()
